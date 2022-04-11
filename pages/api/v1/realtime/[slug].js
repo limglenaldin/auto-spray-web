@@ -1,28 +1,53 @@
-import { ref, onValue, update, set } from "firebase/database";
+import { ref, onValue, update, set, child, get } from "firebase/database";
 import { db } from '../../../../config/Firebase';
 
 export default function handler(req, res) {
   const path = req.query
   const body = req.body
-  const dbRef = ref(db, `/v1/${path.slug}`)
+  // const dbRef = ref(db, `/v1/${path.slug}`)
+  const dbRef = ref(db)
+
+  const getResponses = (response) => {
+    res.status(200).send({
+      "message": "Successful get information",
+      "data": response,
+    })
+  }
 
   if (req.method === 'GET') {
-    let data;
+    get(child(dbRef, `/v1/monitor`)).then((snapshot) => {
+      if (snapshot.exists()) {
+        const data = snapshot.val()
+        getResponses(data)
+      } else {
+        //
+      }
+    }).catch((error) => {
+      console.error(error);
+    });
     
-    try {
-      const unsubcribe = onValue(dbRef, (snapshot) => {
-        data = snapshot.val()
-      })
+    
+    // try {
+      
+    //   onValue(dbRef, (snapshot) => {
+    //     return res.status(200).send({
+    //       "message": "Successful get information",
+    //       "data": snapshot.val(),
+    //     })
+    //   });
+    //   // const unsubcribe = onValue(dbRef, (snapshot) => {
+    //   //   data = snapshot.val()
+    //   // })
 
-      res.status(200).send({
-        "message": "Successful get information",
-        "data": data,
-      })
-    } catch (error) {
-      res.status(500).send({
-        "message": `${error}`
-      })
-    }
+    //   res.status(200).send({
+    //     "message": "Successful get information",
+    //     "data": data,
+    //   })
+    // } catch (error) {
+    //   res.status(500).send({
+    //     "message": `${error}`
+    //   })
+    // }
   } else if (req.method === 'POST') {
     try {
       set(dbRef, body)
