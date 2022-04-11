@@ -15,7 +15,7 @@ export default function handler(req, res) {
   }
 
   if (req.method === 'GET') {
-    get(child(dbRef, `/v1/monitor`)).then((snapshot) => {
+    get(child(dbRef, `/v1/${path.slug}`)).then((snapshot) => {
       if (snapshot.exists()) {
         const data = snapshot.val()
         getResponses(data)
