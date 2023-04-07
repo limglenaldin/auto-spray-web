@@ -4,8 +4,8 @@ import { db } from '../../../../config/Firebase';
 export default function handler(req, res) {
   const path = req.query
   const body = req.body
-  // const dbRef = ref(db, `/v1/${path.slug}`)
-  const dbRef = ref(db)
+  const dbRef = ref(db, `/v1/${path.slug}`)
+  // const dbRef = ref(db)
 
   const getResponses = (response) => {
     res.status(200).send({
